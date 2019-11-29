@@ -20,7 +20,7 @@ jobs:
         pip install -Iv pandas==0.23.3 flask-restful==0.3.6 requests==2.21.0 PyYAML==5.1 Babel==2.6.0 impyla==0.15a1 sklearn==0.0
     - name: Lint with pylint
       run: |
-        pip install pylint
+        pip install -Iv pylint==1.8.3
         cd app
         pylint .
     - name: Unit testing
