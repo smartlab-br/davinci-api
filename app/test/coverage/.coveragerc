@@ -34,4 +34,4 @@ omit = **/test/**/*, */**/__init__.py, **/__pycache__/**, **/config/**
 data_file = test/coverage/.coverage
 
 [xml]
-output = test/coverage/coverage.xml
+output = app/test/coverage/coverage.xml
