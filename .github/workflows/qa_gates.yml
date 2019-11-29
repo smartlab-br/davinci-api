@@ -18,11 +18,12 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -Iv pandas==0.23.3 flask-restful==0.3.6 requests==2.21.0 PyYAML==5.1 Babel==2.6.0 impyla==0.15a1 sklearn==0.0
-    # - name: Lint with pylint
-    #   run: |
-    #     pip install -Iv pylint==1.8.3
-    #     pylint --rcfile=./app/.pylintrc app
+    - name: Lint with pylint
+      run: |
+        pip install -Iv pylint==1.8.3
+        pylint app ./app/.pylintrc
     - name: Unit testing
       run: |
         pip install -Iv nose2==0.9.1
-        nose2 --config app/test/nose2.cfg --with-cov --coverage-report xml --coverage-config app/test/coverage/.coveragerc
+        cd app
+        nose2 --config test/nose2.cfg --with-cov --coverage-report xml --coverage-config test/coverage/.coveragerc
