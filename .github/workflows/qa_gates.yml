@@ -21,7 +21,7 @@ jobs:
     - name: Lint with pylint
       run: |
         pip install -Iv pylint==1.8.3
-        pylint app ./app/.pylintrc
+        pylint --rcfile=./app/.pylintrc app
     - name: Unit testing
       run: |
         pip install -Iv nose2==0.9.1
