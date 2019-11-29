@@ -20,5 +20,4 @@ jobs:
     - name: Test
       run: |
         pip install -Iv nose2==0.9.1
-        cd app
         nose2 --config app/test/nose2.cfg --with-cov --coverage-report xml --coverage-config app/test/coverage/.coveragerc
