@@ -31,9 +31,8 @@ jobs:
         pip install -Iv nose2==0.9.1
         cd app
         nose2 --config test/nose2.cfg --with-cov --coverage-report xml --coverage-config test/coverage/.coveragerc
-    # [DEL] Delegating to sonarcloud.
-    # - name: SonarCloud Scan
-    #   uses: sonarsource/sonarcloud-github-action@master
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
