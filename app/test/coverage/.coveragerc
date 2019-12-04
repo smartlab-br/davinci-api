@@ -30,8 +30,8 @@ exclude_lines =
     def get(self):
 
 [run]
-omit = test/**/*, */**/__init__.py, **/__pycache__/**, **/config/**
-data_file = app/test/coverage/.coverage
+omit = **/test/**/*, */**/__init__.py, **/__pycache__/**, **/config/**
+data_file = test/coverage/.coverage
 
 [xml]
-output = app/test/coverage/coverage.xml
+output = test/coverage/coverage.xml
