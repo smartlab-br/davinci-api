@@ -1,6 +1,12 @@
 name: CI
 
-on: [push]
+on: 
+  pull_request:
+    refs/heads:
+      - master
+      - staging
+      - developement
+      - contrib
 
 jobs:
   test:
@@ -8,8 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-#     - name: Build the Docker image
-#       run: docker build . --file Dockerfile --tag davinci-api:$(date +%s)
     - name: Set up Python 3.7
       uses: actions/setup-python@v1
       with:
@@ -27,3 +31,8 @@ jobs:
         pip install -Iv nose2==0.9.1
         cd app
         nose2 --config test/nose2.cfg --with-cov --coverage-report xml --coverage-config test/coverage/.coveragerc
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
