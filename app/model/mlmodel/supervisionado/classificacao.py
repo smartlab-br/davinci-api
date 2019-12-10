@@ -28,8 +28,6 @@ class Classificacao(BaseModel):
         else:
             predictions = model.predict(pd.DataFrame(dados)).tolist()
         
-        md = self.get_repo().get_metadata(model_id, options['algoritmo'], versao)
-        
         return {
             'dataset': predictions,
             'metadata': self.get_repo().get_metadata(model_id, options['algoritmo'], versao)
