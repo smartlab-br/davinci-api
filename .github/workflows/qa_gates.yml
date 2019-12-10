@@ -24,7 +24,7 @@ jobs:
         pip install -Iv pandas==0.23.3 flask-restful==0.3.6 requests==2.21.0 PyYAML==5.1 Babel==2.6.0 impyla==0.15a1 sklearn==0.0
     - name: Lint with pylint
       run: |
-        pip install -Iv pylint==1.8.3
+        pip install -Iv pylint==2.4.4
         pylint --help
         pylint --rcfile=./app/.pylintrc --exit-zero --file-output=pylint-report.txt ./app/**/*.py
     - name: Unit testing
