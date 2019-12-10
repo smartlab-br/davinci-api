@@ -25,6 +25,7 @@ jobs:
     - name: Lint with pylint
       run: |
         pip install -Iv pylint==1.8.3
+        pylint --help
         pylint --rcfile=./app/.pylintrc --exit-zero --file-output=pylint-report.txt ./app/**/*.py
     - name: Unit testing
       run: |
