@@ -5,8 +5,6 @@ reports/*.xml
 .idea
 .vscode
 .scannerwork
-.app/test/coverage/.coverage
-.app/test/coverage/coverage.xml
 app/test/report.xml
 app/.scannerwork
 requirements.txt
