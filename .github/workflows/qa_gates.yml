@@ -25,8 +25,7 @@ jobs:
     - name: Lint with pylint
       run: |
         pip install -Iv pylint==2.4.4
-        pylint --help
-        pylint --rcfile=./app/.pylintrc --exit-zero --file-output=pylint-report.txt ./app/**/*.py
+        pylint --rcfile=./app/.pylintrc --exit-zero --output-format=text ./app/**/*.py > pylint-report.txt
     - name: Unit testing
       run: |
         pip install -Iv nose2==0.9.1
