@@ -5,7 +5,6 @@ from impala.util import as_pandas
 from datasources import get_hive_connection, get_impala_connection, get_hbase_connection
 
 import pickle
-import sklearn
 
 #pylint: disable=R0903
 class BaseRepository(object):
@@ -620,7 +619,6 @@ class HBaseRepository(object):
         ''' Obtém dataset de acordo com os parâmetros informados '''
         import json
         import base64
-        # import zlib
         import gzip
         from pandas.io.json import json_normalize
 
@@ -639,8 +637,6 @@ class HBaseRepository(object):
         result = {}
         row = json.loads(response.content)['Row']
         for row_key in row:
-            analysis_unit = base64.urlsafe_b64decode(row_key['key'])
-
             for col in row_key['Cell']:
                 colfam = base64.urlsafe_b64decode(col['column'])
                 column_parts = colfam.decode('UTF-8').split(':')
