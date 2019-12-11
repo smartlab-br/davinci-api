@@ -20,18 +20,14 @@ jobs:
         python-version: 3.7
     - name: Install dependencies
       run: |
-        which pip
-        which pip3
-        python -m pip3 install --upgrade pip3
-        pip3 install -Iv pandas==0.23.3 flask-restful==0.3.6 requests==2.21.0 PyYAML==5.1 Babel==2.6.0 impyla==0.15a1 sklearn==0.0
+        python -m pip install --upgrade pip
+        pip install -Iv pandas==0.23.3 flask-restful==0.3.6 requests==2.21.0 PyYAML==5.1 Babel==2.6.0 impyla==0.15a1 sklearn==0.0 pylint==2.4.4 nose2==0.9.1
     - name: Lint with pylint
       run: |
-        pip3 install -Iv pylint==2.4.4
         export PYTHONPATH=./app
         pylint ./app/**/*.py --rcfile=./app/.pylintrc -r n > pylint-report.txt
     - name: Unit testing
       run: |
-        pip3 install -Iv nose2==0.9.1
         nose2 --config app/test/nose2.cfg --with-cov --coverage-report xml --coverage-config app/test/coverage/.coveragerc
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
