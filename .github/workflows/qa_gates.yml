@@ -26,7 +26,7 @@ jobs:
       run: |
         pip install -Iv pylint==2.4.4
         export PYTHONPATH=./app
-        pylint ./app/**/*.py --rcfile=./app/.pylintrc --exit-zero -r n > pylint-report.txt
+        pylint ./app/**/*.py --rcfile=./app/.pylintrc -r n > pylint-report.txt
     - name: Unit testing
       run: |
         pip install -Iv nose2==0.9.1
