@@ -26,6 +26,7 @@ jobs:
       run: |
         pip install -Iv pylint==2.4.4
         ls -l
+        ls -l ./reports/pylint.txt
         pylint ./app/**/*.py --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" --reports=n --output-format=parseable >> ./reports/pylint.txt
     - name: Linting (flake8)
       run: |
