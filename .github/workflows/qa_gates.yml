@@ -25,7 +25,7 @@ jobs:
     - name: Linting
       run: |
         pip install -Iv flake8==3.7.9
-        flake8 . --format='%(path)s:%(row)s: [%(code)s(%(symbol)s), %(obj)s] %(text)s' --exit-zero --output-file=./reports/flake8.txt
+        flake8 . --format='%(path)s:%(row)s: [%(code)s({symbol}), {obj}] %(text)s' --exit-zero --output-file=./reports/flake8.txt
     - name: Unit testing
       run: |
         pip install -Iv nose2==0.9.1
