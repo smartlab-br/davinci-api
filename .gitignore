@@ -1,7 +1,5 @@
 *.pyc
 **/*/nosetests.xml
-reports/*.txt
-reports/*.xml
 **/__pycache__/**
 .idea
 .vscode
@@ -12,4 +10,3 @@ requirements.txt
 start.sh
 **/__pycache__
 setenv.sh
-pylint-report.txt
