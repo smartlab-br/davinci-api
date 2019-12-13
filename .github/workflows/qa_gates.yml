@@ -27,6 +27,7 @@ jobs:
       run: |
         pip install -Iv pylint==2.4.4
         python ./lint/run_linter.py
+        ls -l ./lint/*
 #     - name: Linting (flake8)
 #       run: |
 #         pip install -Iv flake8==3.7.9
