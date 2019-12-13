@@ -9,7 +9,6 @@ class Classificacao(BaseModel):
     def __init__(self):
         ''' Construtor '''
         self.repo = ClassificacaoRepository()
-        pass
 
     def get_repo(self):
         ''' Garantia de que o repo estará carregado '''
