@@ -2,7 +2,7 @@
 import requests
 from flask import current_app
 from impala.util import as_pandas
-from datasources import get_hive_connection, get_impala_connection, get_hbase_connection
+from datasources import get_hive_connection, get_impala_connection
 
 import pickle
 
@@ -239,15 +239,7 @@ class BaseRepository(object):
 
     def get_join_condition(self, table_name, join_clauses=None):
         ''' Obtém a condição do join das tabelas '''
-        main_join = self.ON_JOIN[table_name]
-        if join_clauses is None:
-            return main_join
-        # COMPOSIÇÃO DO JOIN COM FILTRO DESATIVADO
-        # joined_filters = self.build_filter_string(join_clauses, table_name, True)
-        # if joined_filters is None or joined_filters == '':
-        #     return main_join
-        # return main_join + ' AND ' + joined_filters
-        return main_join
+        pass
 
     def get_join_suffix(self, table_name):
         ''' Obtém uma string de sufixo de campo de tabela juntada '''
@@ -598,62 +590,6 @@ class ImpalaRepository(HadoopRepository):
     def load_and_prepare(self):
         ''' Prepara o DAO '''
         self.dao = get_impala_connection()
-
-class HBaseRepository(object):
-    ''' HBase connector class '''
-    def __init__(self):
-        ''' Construtor '''
-        self.dao = self.load_and_prepare()
-
-    def get_dao(self):
-        ''' Garantia de que o modelo estará carregado '''
-        if self.dao is None:
-            self.load_and_prepare()
-        return self.dao
-
-    def load_and_prepare(self):
-        ''' Método abstrato para carregamento do dataset '''
-        self.dao = get_hbase_connection()
-
-    def find_row(self, table, key, column_family, column):
-        ''' Obtém dataset de acordo com os parâmetros informados '''
-        import json
-        import base64
-        import gzip
-        from pandas.io.json import json_normalize
-
-        # Gets rows based on table and key values
-        url = "http://" + current_app.config["HBASE_HOST"] + ":" + current_app.config["HBASE_PORT"] + "/" + table + "/" + key 
-        if column_family is not None:
-            url = url + "/" + str(column_family)
-            if column is not None:
-                url = url + ":" + str(column)
-        response = requests.get(url, headers = {'Accept': 'application/json'})
-
-        # If the response was successful, no Exception will be raised
-        response.raise_for_status()
-
-        # Makes sure the returning data will be a JSON
-        result = {}
-        row = json.loads(response.content)['Row']
-        for row_key in row:
-            for col in row_key['Cell']:
-                colfam = base64.urlsafe_b64decode(col['column'])
-                column_parts = colfam.decode('UTF-8').split(':')
-
-                # Decompressing gzip hbase value
-                value = gzip.decompress(base64.urlsafe_b64decode(col['$']))
-                str_value = value.decode('UTF-8').replace("\\xe2\\x80\\x9", '"') # Replacing double-quotes
-                # Turn value to pandas dataset
-                dataset = json_normalize(json.loads(str_value))
-
-                # Append do existing dataset or create a new one
-                if (column_parts[0] in result):
-                    result[column_parts[0]] = result[column_parts[0]].append(dataset, ignore_index=True)
-                else:
-                    result[column_parts[0]] = dataset
-
-        return result
 
 class MLModelsRepository(object):
     ''' Conector para o repositório de modelos serializados '''
