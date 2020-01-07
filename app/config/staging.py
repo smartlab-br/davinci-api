@@ -22,11 +22,6 @@ class StagingConfig(object):
     # IMPALA_USER = data.decode("utf-8")
     # data, stat = zk.get("/spai/davinci-api/staging/impala_pwd")
     # IMPALA_PWD = data.decode("utf-8")
-
-    # data, stat = zk.get("/spai/davinci-api/staging/hbase_host")
-    # HBASE_HOST = data.decode("utf-8")
-    # data, stat = zk.get("/spai/davinci-api/staging/hbase_port")
-    # HBASE_PORT = data.decode("utf-8")
     
     # data, stat = zk.get("/spai/davinci-api/staging/git_viewconf_url")
     # GIT_VIEWCONF_BASE_URL = data.decode("utf-8")

@@ -12,7 +12,4 @@ class DevelopmentConfig(object):
 
     # GIT_VIEWCONF_BASE_URL = os.getenv('GIT_VIEWCONF_BASE_URL')
 
-    # HBASE_HOST = os.getenv('HBASE_HOST')
-    # HBASE_PORT = os.getenv('HBASE_PORT')
-
     GIT_MLREPO_BASE_URL = os.getenv('GIT_MLREPO_BASE_URL')

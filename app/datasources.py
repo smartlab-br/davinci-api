@@ -26,22 +26,3 @@ def get_impala_connection():
             use_ssl=True
         )
     return g.impala_connection
-
-# Inativo, pois optamos por conectar via REST
-def get_hbase_connection():
-    ''' Gerencia a conexão com o hbase '''
-    import happybase
-    if not hasattr(g, 'hbase_connection'):
-        g.hbase_connection = happybase.Connection(
-            current_app.config["HBASE_HOST"],
-            port=int(current_app.config["HBASE_PORT"]),
-            table_prefix=None,
-            table_prefix_separator=b'_',
-            timeout=None,
-            transport='buffered',
-            protocol='binary',
-            autoconnect=False,
-            compat='0.98'
-        )
-        g.hbase_connection.open()
-    return g.hbase_connection

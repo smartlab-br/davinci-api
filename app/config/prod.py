@@ -23,11 +23,6 @@ class ProductionConfig(object):
     # data, stat = zk.get("/spai/davinci-api/prod/impala_pwd")
     # IMPALA_PWD = data.decode("utf-8")
 
-    # data, stat = zk.get("/spai/davinci-api/prod/hbase_host")
-    # HBASE_HOST = data.decode("utf-8")
-    # data, stat = zk.get("/spai/davinci-api/prod/hbase_port")
-    # HBASE_PORT = data.decode("utf-8")
-
     # data, stat = zk.get("/spai/davinci-api/prod/git_viewconf_url")
     # GIT_VIEWCONF_BASE_URL = data.decode("utf-8")
     data, stat = zk.get("/spai/davinci-api/prod/git_mlrepo_url")
