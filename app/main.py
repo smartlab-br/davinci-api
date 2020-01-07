@@ -34,10 +34,6 @@ def close_db_connection(error):
     # if hasattr(g, 'impala_connection'):
     #     g.impala_connection.close()
     #     g.impala_connection = None
-    # # Encerra a conexão com o impala
-    # if hasattr(g, 'hbase_connection'):
-    #     g.hbase_connection.close()
-    #     g.hbase_connection = None
 
 CORS = CORS(application, resources={r"/*": {"origins": "*"}})
 api = Api(application, api_version='0.1', api_spec_url='/api/swagger') #pylint: disable=C0103
