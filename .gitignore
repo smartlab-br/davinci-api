@@ -10,3 +10,4 @@ requirements.txt
 start.sh
 **/__pycache__
 setenv.sh
+app/.coverage
