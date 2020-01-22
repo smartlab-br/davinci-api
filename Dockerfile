@@ -25,7 +25,7 @@ RUN apk --update --no-cache add --virtual toRemove build-base libffi-dev \
 
 COPY uwsgi.ini /etc/uwsgi/conf.d/
 COPY start.sh /start.sh
-COPY app /
+COPY app /app
 
 RUN chown -R uwsgi:uwsgi /app \
  && chmod +x /start.sh \
