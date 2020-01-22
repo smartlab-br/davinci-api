@@ -1,27 +1,34 @@
-FROM smartlab/flask:latest
+FROM  alpine:3.11
+
 LABEL maintainer="smartlab-dev@mpt.mp.br"
 
-# Installing scipy
-RUN apk update --no-cache build-base gfortran libffi-dev openssl-dev python3-dev musl-dev && \
-    mkdir scipy && cd scipy && \
-    # wget https://github.com/scipy/scipy/releases/download/v1.4.1/scipy-1.4.1.tar.gz && \
-    # tar -xvf scipy-1.4.1.tar.gz && cd scipy-1.4.1 && \
-    # python3 -m pip --no-cache-dir install . && \
-    pip3 install -Iv scipy==1.4.1 && \
-    rm -rf scipy 2> /dev/null && rm -rf /var/cache/apk/* 2> /dev/null && rm -rf ~/.cache/ 2> /dev/null
+# Fix versions of pip and setuptools
+ARG PIP 20.0.1
+ARG STS 41.2.0 
 
-# Installing scikit-learn
-# RUN apk add --no-cache openblas-dev freetype-dev pkgconfig && \
-#     pip3 install -Iv scikit-learn==0.21.3
-#     pip3 install -Iv scikit-learn==0.22.1
+COPY requirements.txt /app/requirements.txt
+COPY uwsgi.ini /etc/uwsgi/conf.d/
+COPY start.sh /start.sh
 
-# Removing packages
-# RUN apk del build-base gofortran libffi-dev openssl-dev python3-dev musl-dev
+RUN apk --update --no-cache add --virtual toRemove build-base libffi-dev openssl-dev python3-dev \
+                                                   cyrus-sasl-dev openblas-dev openblas-dev gfortran \
+                                                   g++ gcc musl-dev lapack-dev \
+ && apk --update --no-cache add libffi openssl ca-certificates python3 libstdc++ uwsgi lapack libgcc \
+                                libquadmath musl libgfortran cython \
+ && pip3 install --upgrade pip==$PIP setuptools==$STS \
+ && pip3 install -r /app/requirements.txt \
+ && apk del toRemove \
+ && rm -rf /root/.cache \
+ && rm -rf /var/cache/apk/* \
+ && rm -rf ~/.cache/ \
+ && mkdir -p /var/run/flask && \
+ && chown -R uwsgi:uwsgi /var/run/flask /etc/uwsgi/conf.d
 
-COPY app /app/
-COPY uwsgi.ini /etc/uwsgi/
-
+COPY app /
+RUN chown -R uwsgi:uwsgi /app
+ENV DEBUG 0
+ENV FLASK_APP /app/main.py
+ENV PYTHONPATH /app:/usr/lib/python3.8/site-packages
 EXPOSE 5000
 WORKDIR /app
-
 ENTRYPOINT ["sh", "/start.sh"]
