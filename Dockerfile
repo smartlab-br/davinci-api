@@ -8,11 +8,15 @@ ARG STS=41.2.0
 
 COPY requirements.txt /app/requirements.txt
 
-RUN apk --update --no-cache add --virtual toRemove build-base libffi-dev openssl-dev python3-dev \
-                                                   cyrus-sasl-dev openblas-dev openblas-dev gfortran \
-                                                   g++ gcc musl-dev lapack-dev \
- && apk --update --no-cache add libffi openssl ca-certificates python3 libstdc++ uwsgi lapack libgcc \
+RUN apk --update --no-cache add --virtual toRemove build-base libffi-dev \
+                                          openssl-dev python3-dev \
+                                          cyrus-sasl-dev openblas-dev \
+                                          openblas-dev gfortran \
+                                          g++ gcc musl-dev lapack-dev \
+ && apk --update --no-cache add libffi openssl ca-certificates python3 \
+                                libstdc++ uwsgi lapack libgcc \
                                 libquadmath musl libgfortran cython \
+                                openblas libgomp \
  && pip3 install --upgrade pip==${PIP} setuptools==${STS} \
  && pip3 install -r /app/requirements.txt \
  && apk del toRemove \
