@@ -6,8 +6,8 @@
 .scannerwork
 app/test/report.xml
 app/.scannerwork
-requirements.txt
-start.sh
 **/__pycache__
 setenv.sh
 app/.coverage
+docker-compose.yml
+.env.staging

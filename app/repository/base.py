@@ -5,6 +5,7 @@ from impala.util import as_pandas
 from datasources import get_hive_connection, get_impala_connection
 
 import pickle
+import sklearn
 
 #pylint: disable=R0903
 class BaseRepository(object):
