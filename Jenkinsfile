@@ -6,34 +6,27 @@ pipeline {
     }
 
     stages {
-
-        stage('Pull Docker Parent Image') {
-            steps {
-                img_parent_pull()
-            }
-        }
-
-        stage('Execute unit tests') {
-            agent {
-                docker {
-                    image 'smartlab/flask:latest'
-                    args '-u root:root'
-                    reuseNode true
-                }
-            }
-            environment {
-                PYTHONPATH = "${pwd()}/app:$PYTHONPATH"
-            }
-            steps {
-                executeUnitTests()
-            }
-            post {
-               always {
-                    junit 'app/test/report.xml'
-                    step([$class: 'CoberturaPublisher', coberturaReportFile: 'app/test/coverage/coverage.xml'])
-                }
-            }
-        }
+        // stage('Execute unit tests') {
+        //     agent {
+        //         docker {
+        //             image 'smartlab/flask:latest'
+        //             args '-u root:root'
+        //             reuseNode true
+        //         }
+        //     }
+        //     environment {
+        //         PYTHONPATH = "${pwd()}/app:$PYTHONPATH"
+        //     }
+        //     steps {
+        //         executeUnitTests()
+        //     }
+        //     post {
+        //        always {
+        //             junit 'app/test/report.xml'
+        //             step([$class: 'CoberturaPublisher', coberturaReportFile: 'app/test/coverage/coverage.xml'])
+        //         }
+        //     }
+        // }
 
 //        stage('SonarQube analysis') {
 //            steps {
