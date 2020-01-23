@@ -14,9 +14,8 @@ RUN apk --update --no-cache add --virtual toRemove build-base libffi-dev \
                                           openblas-dev gfortran \
                                           g++ gcc musl-dev lapack-dev \
  && apk --update --no-cache add libffi openssl ca-certificates python3 \
-                                libstdc++ uwsgi lapack libgcc \
-                                libquadmath musl libgfortran cython \
-                                openblas libgomp \
+                                libstdc++ lapack libgcc libquadmath musl\
+                                libgfortran cython openblas libgomp \
  && pip3 install --upgrade pip==${PIP} setuptools==${STS} \
  && pip3 install -r /app/requirements.txt \
  && apk del toRemove \
