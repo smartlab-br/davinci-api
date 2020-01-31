@@ -55,19 +55,18 @@ class BaseModel(object):
         if dataset is None:
             return None
         if options is not None:
-            if (('as_pandas' in options and options['as_pandas']) or
-                ('as_is' in options and options['as_is'])):
+            if 'as_pandas' in options and options['as_pandas']:
                 return {
-                    "metadata": self.fetch_metadata(),
+                    "metadata": self.fetch_metadata(options),
                     "dataset": dataset
                 }
             elif 'as_dict' in options and options['as_dict']:
                 return {
-                    "metadata": self.fetch_metadata(),
+                    "metadata": self.fetch_metadata(options),
                     "dataset": dataset.to_dict('records')
                 }
         return f'{{ \
-            "metadata": {json.dumps(self.fetch_metadata())}, \
+            "metadata": {json.dumps(self.fetch_metadata(options))}, \
             "dataset": {dataset.to_json(orient="records")} \
             }}'
 
@@ -75,7 +74,7 @@ class BaseModel(object):
         ''' Método abstrato para carregamento do repositório '''
         raise NotImplementedError("Models precisam implementar get_repo")
 
-    def fetch_metadata(self):
+    def fetch_metadata(self, options={}):
         ''' Método abstrato para carregamento do dataset '''
         return self.METADATA
 
@@ -288,26 +287,13 @@ class BaseModel(object):
             }
         return term_values
 
-    @staticmethod
-    def build_derivatives(each_obj_struct, options, each_obj, data_collection):
+    @classmethod
+    def build_derivatives(cls, each_obj_struct, options, each_obj, data_collection):
         ''' Gets derivetive attributes from configs '''
         any_nodata = False
         for each_inst in each_obj_struct['instances']:
             try:
-                if each_inst['type'] == 'from_id':
-                    data_collection[each_inst['name']] = each_obj['dataset'].loc[each_obj['dataset'][each_inst['named_prop']] == int(options['cd_analysis_unit'])].iloc[0]
-                elif each_inst['type'] == 'first_occurence':
-                    data_collection[each_inst['name']] = each_obj['dataset'].reset_index().loc[0]
-                elif each_inst['type'] == 'min':
-                    if each_obj['dataset'][each_inst['named_prop']].dtype == 'object':
-                        data_collection[each_inst['name']] = each_obj['dataset'].loc[each_obj['dataset'][each_inst['named_prop']] == each_obj['dataset'][each_inst['named_prop']].min()].iloc[0]
-                    else:
-                        data_collection[each_inst['name']] = each_obj['dataset'].loc[each_obj['dataset'][each_inst['named_prop']].idxmin()]
-                elif each_inst['type'] == 'max':
-                    if each_obj['dataset'][each_inst['named_prop']].dtype == 'object':
-                        data_collection[each_inst['name']] = each_obj['dataset'].loc[each_obj['dataset'][each_inst['named_prop']] == each_obj['dataset'][each_inst['named_prop']].max()].iloc[0]
-                    else:
-                        data_collection[each_inst['name']] = each_obj['dataset'].loc[each_obj['dataset'][each_inst['named_prop']].idxmax()]
+                data_collection[each_inst['name']] = cls.get_collection_from_type(each_obj['dataset'], each_inst['type'], each_inst['named_prop'], options['cd_analysis_unit'])
             except:
                 data_collection[each_inst['name']] = None
                 any_nodata = True
@@ -315,6 +301,25 @@ class BaseModel(object):
                 data_collection[each_inst['name']] = None
                 any_nodata = True
         return (data_collection, any_nodata)
+
+    @staticmethod
+    def get_collection_from_type(dataset, inst_type, named_prop=None, id_au=None):
+        ''' Use pandas filter to set a collection '''
+        if inst_type == 'from_id':
+            return dataset.loc[dataset[named_prop] == int(id_au)].iloc[0]
+        elif inst_type == 'first_occurence':
+            return dataset.reset_index().loc[0]
+        elif inst_type == 'min':
+            if dataset[named_prop].dtype == 'object':
+                return dataset.loc[dataset[named_prop] == dataset[named_prop].min()].iloc[0]
+            else:
+                return dataset.loc[dataset[named_prop].idxmin()]
+        elif inst_type == 'max':
+            if dataset[named_prop].dtype == 'object':
+                return dataset.loc[dataset[named_prop] == dataset[named_prop].max()].iloc[0]
+            else:
+                return dataset.loc[dataset[named_prop].idxmax()]
+        return None
 
     def replace_named_prop(self, struct, data_collection):
         ''' Replaces the named_prop according to confs '''
@@ -330,6 +335,8 @@ class BaseModel(object):
             del struct['multiplier']
         if 'collapse' in struct:
             del struct['collapse']
+        if 'uiTags' in struct:
+            del struct['uiTags']
         # Returns the cleaned and formatted structure
         return struct
 
@@ -365,7 +372,7 @@ class BaseModel(object):
 
     @staticmethod
     def del_keywords(struct):
-        ''' Removes davinci-only keywords from an object and returns it clean '''
+        ''' Removes datahub-only keywords from an object and returns it clean '''
         keywords = ['as_is', 'keep_template']
         for keyword in keywords:
             if keyword in struct:
@@ -386,7 +393,7 @@ class BaseModel(object):
         if struct['function'] == 'slice':
             return base_object[fn_args[0]:fn_args[1]]
         else:
-            return base_object['function'](*tuple(fn_args))
+            return getattr(base_object, struct['function'])(*tuple(fn_args))
 
     def find_and_operate(self, operation, options=None):
         ''' Obtém um conjunto de dados e opera em cima deles '''

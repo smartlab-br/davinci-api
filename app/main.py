@@ -7,8 +7,6 @@ from flask_restful_swagger_2 import Api
 
 from service.request_handler import FLPORequestHandler
 
-from resources.v1.municipio import MunicipiosResource, MunicipioResource
-
 from resources.v1.mlmodel.supervisionado.classificacao import ClassificacaoResource
 
 from resources.v1.healthchecks import HCAlive
@@ -27,9 +25,6 @@ CORS = CORS(application, resources={r"/*": {"origins": "*"}})
 api = Api(application, api_version='0.1', api_spec_url='/api/swagger') #pylint: disable=C0103
 
 api.add_resource(HCAlive, '/hcalive')
-
-api.add_resource(MunicipiosResource, '/municipios')
-api.add_resource(MunicipioResource, '/municipio/<int:cd_municipio_ibge>')
 
 # Endpoints de modelos de Machine Learning
 api.add_resource(ClassificacaoResource, '/ml/classificacao/<string:model_id>')

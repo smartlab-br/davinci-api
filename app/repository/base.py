@@ -3,6 +3,7 @@ import requests
 from flask import current_app
 
 import pickle
+import sklearn
 
 class MLModelsRepository():
     ''' Conector para o repositório de modelos serializados '''
