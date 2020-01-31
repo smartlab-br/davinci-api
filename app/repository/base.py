@@ -1,9 +1,7 @@
 ''' Repository genérico '''
+import pickle
 import requests
 from flask import current_app
-
-import pickle
-import sklearn
 
 class MLModelsRepository():
     ''' Conector para o repositório de modelos serializados '''
@@ -14,7 +12,9 @@ class MLModelsRepository():
         # Modelos treinados devem ser serializados com pickle e
         # receber a extensão .ml
         # Gets a template from git
-        location = current_app.config['GIT_MLREPO_BASE_URL'].format(self.TIPO, algoritmo, model_id, versao)
+        location = current_app.config['GIT_MLREPO_BASE_URL'].format(
+            self.TIPO, algoritmo, model_id, versao
+        )
         # Load and deserialize
         return pickle.loads(requests.get(location + '.ml', verify=False).content)
 
@@ -23,6 +23,8 @@ class MLModelsRepository():
         # Performance de modelos treinados devem ser serializados com pickle e
         # receber a extensão .sc
         # Gets a template from git
-        location = current_app.config['GIT_MLREPO_BASE_URL'].format(self.TIPO, algoritmo, model_id, versao)
+        location = current_app.config['GIT_MLREPO_BASE_URL'].format(
+            self.TIPO, algoritmo, model_id, versao
+        )
         # Load and deserialize
         return pickle.loads(requests.get(location + '.sc', verify=False).content)

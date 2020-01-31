@@ -1,6 +1,6 @@
 ''' Repository para classificar e adicionar metadados ao retorno '''
-from repository.mlmodel.supervisionado.classificacao import ClassificacaoRepository
 import pandas as pd
+from repository.mlmodel.supervisionado.classificacao import ClassificacaoRepository
 
 #pylint: disable=R0903
 class Classificacao():
@@ -21,12 +21,12 @@ class Classificacao():
         if 'versao' in options:
             versao = options['versao']
         model = self.get_repo().get_model(model_id, options['algoritmo'], versao)
-        
+
         if 'proba' in options and options['proba'] == 'S':
             predictions = model.predict_proba(pd.DataFrame(dados)).tolist()
         else:
             predictions = model.predict(pd.DataFrame(dados)).tolist()
-        
+
         return {
             'dataset': predictions,
             'metadata': self.get_repo().get_metadata(model_id, options['algoritmo'], versao)

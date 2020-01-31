@@ -1,6 +1,6 @@
 ''' Controller para fornecer respostas a classificações de modelos treinados '''
-from flask import request
 from flask_restful_swagger_2 import swagger
+from flask import request
 from model.mlmodel.supervisionado.classificacao import Classificacao
 
 class ClassificacaoResource():
