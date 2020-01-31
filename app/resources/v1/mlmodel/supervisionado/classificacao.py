@@ -1,10 +1,9 @@
 ''' Controller para fornecer respostas a classificações de modelos treinados '''
 from flask import request
 from flask_restful_swagger_2 import swagger
-from resources.base import BaseResource
 from model.mlmodel.supervisionado.classificacao import Classificacao
 
-class ClassificacaoResource(BaseResource):
+class ClassificacaoResource():
     ''' Classe de resource de modelos de classificacao '''
     def __init__(self):
         ''' Construtor'''

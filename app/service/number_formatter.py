@@ -1,5 +1,5 @@
 ''' Module for formatting numbers '''
-from math import floor
+from math import floor, isnan
 from babel.numbers import format_number, format_decimal
 
 class NumberFormatter():
@@ -8,8 +8,10 @@ class NumberFormatter():
     def format(cls, valor, options):
         ''' Method that formats a number into a HTML snippet '''
         # Escapes with default, when there's no value
-        if valor is None:
-            if options['default'] is not None:
+        try:
+            valor = cls.validate(valor)
+        except:
+            if 'default' in options and options['default'] is not None:
                 return options['default']
             return '-'
 
@@ -17,10 +19,12 @@ class NumberFormatter():
             return valor
 
         # Sets default values
-        (precision, multiplier, collapse, str_locale, n_format, ui_tags) = cls.load_defaults(options)
+        (
+            precision, multiplier, collapse, str_locale, n_format, ui_tags
+        ) = cls.load_defaults(options)
 
         # Applies multiplier and sets precision
-        valor = cls.apply_mulitplier(valor, multiplier)
+        valor = cls.apply_multiplier(valor, multiplier)
         precision = cls.precision_override(n_format, collapse, precision)
 
         # Adjusts collapsed value
@@ -35,12 +39,7 @@ class NumberFormatter():
             if 'uiTags' in collapse:
                 ui_tags = collapse['uiTags']
 
-        if (n_format == 'inteiro' or
-                (n_format in ['real', 'porcentagem', 'monetario'] and
-                 (((valor - floor(valor))*(10 ** precision) == 0.0 and not collapse) or
-                  ((valor_c - floor(valor_c))*(10 ** precision) == 0.0 and collapse))
-                )
-           ):
+        if cls.is_integer_after_collapse(n_format, valor, valor_c, precision, collapse):
             # Se o número for efetivamente um inteiro e não tiver
             # collapse, retira a casa decimal
             precision = 0
@@ -49,6 +48,27 @@ class NumberFormatter():
         vlr_fmt = cls.format_with_locale(n_format, valor_c, str_locale)
 
         return cls.get_unit_prefix(n_format, ui_tags) + vlr_fmt + suffix
+
+    @staticmethod
+    def validate(valor):
+        ''' Returns converted, valid, number '''
+        if isinstance(valor, str):
+            return float(valor)
+        if valor is None or isnan(valor):
+            raise ValueError
+        return valor
+
+    @staticmethod
+    def is_integer_after_collapse(n_format, valor, valor_c, precision, collapse):
+        ''' Checks if after collapsing the number is actually an integer '''
+        if n_format == 'inteiro':
+            return True
+        if n_format in ['real', 'porcentagem', 'monetario']:
+            if (valor - floor(valor))*(10 ** precision) == 0.0 and not collapse:
+                return True
+            if (valor_c - floor(valor_c))*(10 ** precision) == 0.0 and collapse:
+                return True
+        return False
 
     @staticmethod
     def load_defaults(options):
@@ -83,8 +103,7 @@ class NumberFormatter():
         if n_format == 'monetario':
             if ui_tags:
                 return "<span>R$</span>"
-            else:
-                return "R$"
+            return "R$"
         return ''
 
     @staticmethod
@@ -93,8 +112,7 @@ class NumberFormatter():
         if n_format == 'porcentagem':
             if ui_tags:
                 return (valor, "<span>%</span>", None)
-            else:
-                return (valor, "%", None)
+            return (valor, "%", None)
         if collapse is not None:
             magnitude = floor((len(str(floor(abs(valor)))) - 1)/3)
 
@@ -111,21 +129,20 @@ class NumberFormatter():
                 ]
             else:
                 magnitudes = ['', 'mil', 'mi', 'bi', 'tri']
-            
+
             if magnitude > 0:
                 valor = valor / (10 ** (magnitude * 3))
             return (valor, magnitudes[magnitude], magnitude)
         return (valor, '', None)
 
     @staticmethod
-    def apply_mulitplier(valor, multiplier):
+    def apply_multiplier(valor, multiplier):
         ''' Applies multiplier to value '''
         if isinstance(valor, int):
             return valor * multiplier
-        elif isinstance(valor, float):
+        if isinstance(valor, float):
             return valor * float(multiplier)
-        else:
-            return float(valor) * float(multiplier)
+        return float(valor) * float(multiplier)
 
     @staticmethod
     def precision_override(n_format, collapse, precision):
@@ -133,7 +150,7 @@ class NumberFormatter():
         if ((n_format in ['porcentagem'] and precision is None) or
                 (n_format in ['real'] and collapse)):
             return 1
-        elif precision is None:
+        if precision is None:
             return 0
         return precision
 
@@ -142,5 +159,4 @@ class NumberFormatter():
         ''' Formatting value according to locale '''
         if n_format in ['monetario', 'porcentagem', 'real']:
             return format_decimal(valor_c, locale=str_locale)
-        else:
-            return format_number(valor_c, locale=str_locale)
+        return format_number(valor_c, locale=str_locale)

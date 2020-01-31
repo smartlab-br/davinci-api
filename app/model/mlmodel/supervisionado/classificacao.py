@@ -1,10 +1,9 @@
 ''' Repository para classificar e adicionar metadados ao retorno '''
-from model.base import BaseModel
 from repository.mlmodel.supervisionado.classificacao import ClassificacaoRepository
 import pandas as pd
 
 #pylint: disable=R0903
-class Classificacao(BaseModel):
+class Classificacao():
     ''' Definição do repo '''
     def __init__(self):
         ''' Construtor '''

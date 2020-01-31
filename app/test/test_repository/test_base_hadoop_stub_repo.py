@@ -1,27 +1,6 @@
 '''Main tests in API'''
 import unittest
-from repository.base import HadoopRepository
-
-class StubHadoopRepository(HadoopRepository):
-    ''' Classe de STUB da abstração de repositórios hadoop (hive e impala) '''
-    TABLE_NAMES = {
-        'MAIN': 'indicadores',
-        'municipio': 'municipio'
-    }
-    JOIN_SUFFIXES = {
-        'municipio': '_mun'
-    }
-    ON_JOIN = {
-        'municipio': 'cd_mun_ibge = cd_municipio_ibge_dv'
-    }
-    NAMED_QUERIES = {
-        'QRY_FIND_DATASET': 'SELECT {} FROM {} {} {} {} {} {}',
-        'QRY_FIND_JOINED_DATASET': 'SELECT {} FROM {} LEFT JOIN {} ON {} {} {} {}'
-    }
-    def load_and_prepare(self):
-        self.dao = 'Instanciei o DAO'
-    def fetch_data(self, query):
-        return query
+from test.stubs.repository import StubHadoopRepository
 
 class HadoopRepositoryFindDatasetTest(unittest.TestCase):
     ''' Classe que testa a obtenção de dados de tabela única '''
@@ -163,26 +142,6 @@ class HadoopRepositoryFindJoinedDatasetTest(unittest.TestCase):
             repo.find_joined_dataset,
             options
         )
-
-    def test_full_query(self):
-        ''' Verifica correta formação da query '''
-        repo = StubHadoopRepository()
-        options = {
-            "categorias": ['nm_indicador', 'nu_competencia', 'vl_indicador', 'lat_mun', 'long_mun'],
-            "valor": ['vl_indicador'],
-            "agregacao": ['sum'],
-            "ordenacao": ['-nm_indicador'],
-            "where": ['eq-nu_competencia-2010'],
-            "joined": 'municipio'
-        }
-        result = repo.find_joined_dataset(options)
-        expected = ('SELECT nm_indicador, nu_competencia, vl_indicador, lat, '
-                    'long, sum(vl_indicador) AS agr_sum_vl_indicador FROM '
-                    'indicadores LEFT JOIN municipio ON cd_mun_ibge = '
-                    'cd_municipio_ibge_dv  WHERE nu_competencia = 2010 GROUP '
-                    'BY nm_indicador, nu_competencia, vl_indicador, lat, long '
-                    'ORDER BY nm_indicador DESC')
-        self.assertEqual(result, expected)
 
     def test_full_query_limit_offset(self):
         ''' Verifica correta formação da query com limit e offset'''
