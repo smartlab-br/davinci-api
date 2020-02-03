@@ -3,6 +3,7 @@ from flask_restful_swagger_2 import swagger
 from flask import request
 from model.mlmodel.supervisionado.classificacao import Classificacao
 
+#pylint: disable=R0903
 class ClassificacaoResource():
     ''' Classe de resource de modelos de classificacao '''
     def __init__(self):

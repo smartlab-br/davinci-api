@@ -26,9 +26,9 @@ class BaseModel():
             "dataset": {dataset.to_json(orient="records")} \
             }}'
 
-    def fetch_metadata(self, options):
+    def fetch_metadata(self, _options):
         ''' Gets metadata to add to the response '''
-        pass
+        return self.METADATA
 
     def get_repo(self):
         ''' Método abstrato para carregamento do repositório '''
