@@ -19,7 +19,7 @@ if [ -e $FLASK_APP ] ; then
 
         if [ "$1" = 'uwsgi' ] ; then
                 echo uWSGI mode
-                exec uwsgi --ini /etc/uwsgi/conf.d/uwsgi.ini --die-on-term --uid 100
+                exec uwsgi --ini /etc/uwsgi/conf.d/uwsgi.ini --die-on-term
         fi
 
         if [ "$1" = 'terminal' ] ; then
