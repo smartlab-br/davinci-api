@@ -37,7 +37,7 @@ ENV FLASK_APP /app/main.py
 ENV PYTHONPATH /app:/usr/lib/python3.8/site-packages
 
 # Enable the next line when it goes to production
-# USER uwsgi
+USER uwsgi
 EXPOSE 5000
 WORKDIR /app
 ENTRYPOINT ["sh", "/start.sh"]
