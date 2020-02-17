@@ -1,10 +1,11 @@
 ''' Controller para fornecer respostas a classificações de modelos treinados '''
-from flask import request
 from flask_restful_swagger_2 import swagger
-from resources.base import BaseResource
+from flask_restful import Resource
+from flask import request
 from model.mlmodel.supervisionado.classificacao import Classificacao
 
-class ClassificacaoResource(BaseResource):
+#pylint: disable=R0903
+class ClassificacaoResource(Resource):
     ''' Classe de resource de modelos de classificacao '''
     def __init__(self):
         ''' Construtor'''
@@ -58,9 +59,9 @@ class ClassificacaoResource(BaseResource):
     })
     def get(self, model_id):
         ''' Obtém o resultado do modelo '''
-        return self.__get_domain().classificar(model_id, request.json, request.args)
+        return self.get_domain().classificar(model_id, request.json, request.args)
 
-    def __get_domain(self):
+    def get_domain(self):
         ''' Carrega o modelo de domínio, se não o encontrar '''
         if self.domain is None:
             self.domain = Classificacao()

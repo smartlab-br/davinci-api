@@ -14,14 +14,14 @@ RUN apk --update --no-cache add --virtual toRemove build-base libffi-dev \
                                           openblas-dev gfortran \
                                           g++ gcc musl-dev lapack-dev \
  && apk --update --no-cache add libffi openssl ca-certificates python3 \
-                                libstdc++ uwsgi lapack libgcc \
-                                libquadmath musl libgfortran cython \
-                                openblas libgomp \
+                                libstdc++ lapack libgcc libquadmath musl\
+                                libgfortran cython openblas libgomp \
  && pip3 install --upgrade pip==${PIP} setuptools==${STS} \
  && pip3 install -r /app/requirements.txt \
  && apk del toRemove \
  && rm -rf /root/.cache \
- && rm -rf /var/cache/apk/* 
+ && rm -rf /var/cache/apk/* \
+ && addgroup -S uwsgi && adduser -S uwsgi -G uwsgi
 
 COPY uwsgi.ini /etc/uwsgi/conf.d/
 COPY start.sh /start.sh
@@ -36,6 +36,8 @@ ENV DEBUG 0
 ENV FLASK_APP /app/main.py
 ENV PYTHONPATH /app:/usr/lib/python3.8/site-packages
 
+# Enable the next line when it goes to production
+# USER uwsgi
 EXPOSE 5000
 WORKDIR /app
 ENTRYPOINT ["sh", "/start.sh"]

@@ -1,0 +1,17 @@
+version: "3"
+services:
+
+  flask:
+    build: .
+    restart: always
+    env_file:
+      - .env.staging
+    ports:
+      - 5000:5000    
+    command:
+      - uwsgi
+    networks:
+      - backend
+
+networks:
+  backend:
