@@ -11,6 +11,6 @@ uwsgi==2.0.18
 kazoo==2.5.0
 Babel==2.6.0
 ansicolors==1.1.8
-requests==2.21.0
+requests==2.32.2
 PyYAML==5.1
 impyla==0.14.1
